@@ -7,14 +7,21 @@ from .button import Button
 class Menu:
     def __init__(self):
         self._running = True
-        
+        self.size = self.screen_width, self.screen_height = 800, 600 
+        self.center_x = (self.screen_width - 400) // 2
+        self.center_y = (self.screen_height - 50) // 2
+        self.menu_option = None
+        self.text_colour = colours.WHITE
+
 
     def on_init(self):
         pygame.init()
         self._running = True
 
-        self.size = self.screen_width, self.screen_height = 800, 600 
+        self.title_font = pygame.font.Font("fonts/title_font.ttf", 65)
+        self.title_text = "Rock Paper Scissors"
         
+
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.screen_colour = colours.DODGER_BLUE
         self.screen_particles = self._generate_screen_fire()
@@ -27,26 +34,37 @@ class Menu:
 
 
     def _create_buttons(self):
-        button1 = Button(self.screen_width // 2 - 200, self.screen_height // 2 - 50, 400, 50, "Player V.S. Player", self)
-        button2 = Button(self.screen_width // 2 - 200, self.screen_height // 2 + 50, 400, 50, "Player V.S. Computer", self)
+        button1 = Button(self, "Player V.S. Player",   self.center_x, self.center_y - 50, "PVP")
+        button2 = Button(self, "Player V.S. Computer", self.center_x, self.center_y + 50, "PVC")
         return [button1, button2]
  
     def event(self, event):
         if event.type == QUIT:
-            running = False
+            self._running = False
 
         for button in self.buttons:
             button.handle_event(event)
         
+  
 
     def loop(self):
+        
+        collision_state = any(buttons.hover for buttons in self.buttons)
+        if collision_state:
+            self.screen_colour = colours.FIREBRICK
+           
+        else: 
+            self.screen_colour = colours.DODGER_BLUE
+        
         self.screen.fill(self.screen_colour)
+
         self._set_screen_particles_to_fire()
 
+        self.title_surface = self.title_font.render(self.title_text, True, self.text_colour)
+        self.screen.blit(self.title_surface, (self.center_x - 85, self.center_y - 165))
+        
         for button in self.buttons:
             button.draw()
-
-        Button.hover = False
         
    
     def render(self):
@@ -61,13 +79,14 @@ class Menu:
         if self.on_init() == False:
             self._running = False
 
-        while( self._running ):
+        while(self._running):
             for event in pygame.event.get():
                 self.event(event)
             self.loop()
             self.render()
-        self.cleanup()
 
+        self.cleanup()
+        return self.menu_option
 
     def _generate_screen_fire(self):
         particles = []
@@ -97,4 +116,3 @@ class Menu:
             particle[0] = x
             particle[1] = y 
         
-          
