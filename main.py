@@ -1,9 +1,5 @@
-from rock_paper_sissors import RockPaperScissors
-from menu.interface import Menu
+
+from game import Game
 if __name__ == "__main__":
-        menu = Menu()
-        choice = menu.run()
-        print(choice)
+        Game().run()
         
-        rpc = RockPaperScissors()
-        rpc.run()
