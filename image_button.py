@@ -44,6 +44,6 @@ class ImageButton():
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def place_at_bottom(self):
-        self.y = self.interface.screen_height - self.height - 10
+        self.y = self.interface.screen_height - self.height - 30
         self._set_rect()
 
