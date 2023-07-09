@@ -114,17 +114,20 @@ class Game:
         #if self.players != [] and all(player.name for player in self.players):
         if self.play_game:
 
-            pygame.draw.line(self.screen, colours.BLACK, (0, 170), (self.screen_width, 170), 5)
-            pygame.draw.line(self.screen, colours.BLACK, (self.center_x, 170), (self.center_x, self.screen_height), 5)
+            self.draw_grid()
 
 
             p1_name = self.sub_tiltes_font.render(GameState.players[0].__str__(), True, self.text_colour)
             self.screen.blit(p1_name, (10, 180))
-            self._generate_flashing_choices(self.center_x * 0.35 ,self.center_y)
+            if GameState.players[0].choice != None:
+                self.screen.blit(GameState.players[0].get_player_choice_image(), (self.center_x * 0.35, self.center_y))
+            else:
+                self._generate_flashing_choices(self.center_x * 0.35 ,self.center_y)
+           
 
-            rock = ImageButton(self, self.rock_img, self.golden_rock_img, self.center_x * 0.01, 0, "rock", GameState.set_current_choice)
-            paper = ImageButton(self, self.paper_img, self.golden_paper_img, self.center_x * 0.67, 0, "paper", GameState.set_current_choice)
-            scissors = ImageButton(self, self.scissors_img, self.golden_scissors_img, self.center_x * 0.34, 0, "scissors", GameState.set_current_choice)
+            rock = ImageButton(self, self.rock_img, self.golden_rock_img, self.center_x * 0.01, 0, "Rock", GameState.set_current_choice)
+            paper = ImageButton(self, self.paper_img, self.golden_paper_img, self.center_x * 0.67, 0, "Paper", GameState.set_current_choice)
+            scissors = ImageButton(self, self.scissors_img, self.golden_scissors_img, self.center_x * 0.34, 0, "Scissors", GameState.set_current_choice)
         
             rock.place_at_bottom()
             paper.place_at_bottom()
@@ -133,11 +136,16 @@ class Game:
             if len(self.buttons) < 3:
                 self.buttons += [rock, paper, scissors]
 
-
+            
             p2_name = self.sub_tiltes_font.render(GameState.players[1].__str__(), True, self.text_colour)
             self.screen.blit(p2_name, (self.center_x + 10, 180))
-            self._generate_flashing_choices(self.center_x * 1.35 ,self.center_y)
             
+            if GameState.players[1].choice != None:
+                self.screen.blit(GameState.players[1].get_player_choice_image(), (self.center_x * 1.35, self.center_y))
+            else:
+                self._generate_flashing_choices(self.center_x * 1.35 ,self.center_y)
+              
+ 
             
             
 
@@ -231,6 +239,7 @@ class Game:
         return pygame.transform.scale(image, (width * percentage, height * percentage))
     
     def create_golden_image(self, image):
+
         # Create a copy of the image to modify
 
         image = image.copy()
@@ -246,3 +255,8 @@ class Game:
 
                 image.set_at((x, y), (r, g, b, a))
         return image
+    
+
+    def draw_grid(self):
+        pygame.draw.line(self.screen, colours.BLACK, (0, 170), (self.screen_width, 170), 5)
+        pygame.draw.line(self.screen, colours.BLACK, (self.center_x, 170), (self.center_x, self.screen_height), 5)

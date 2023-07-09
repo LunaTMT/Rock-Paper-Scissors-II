@@ -17,6 +17,7 @@ class Player:
         self.choice = None
 
         self.name_text_box = None
+
         GameState.turn += 1
 
 
@@ -26,6 +27,16 @@ class Player:
         
     def __repr__(self) -> str:
         return f"P{(self.id)}"
+    
+    def get_player_choice_image(self):
+        match self.choice:
+            case "Rock":
+                return self.interface.rock_img
+            case "Paper":
+                return self.interface.paper_img
+            case "Scissors":
+                return self.interface.scissors_img
+
         
 
 

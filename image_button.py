@@ -18,7 +18,7 @@ class ImageButton():
         self.name_state = name_state
         self.function = function 
         self.hover = False
-
+    
         self._set_rect()
 
         
@@ -37,7 +37,6 @@ class ImageButton():
         
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                GameState.get_next_player()
                 self.function(self.name_state) 
                
 

@@ -25,7 +25,6 @@ class TextBox:
         self.hover = False
         self.input_active = False
 
-
         self._set_rect()
 
     def center_box(self):
@@ -42,8 +41,7 @@ class TextBox:
     
     def draw(self):
         
-        
-
+    
         text = f"Player {GameState.current_player.id}"
         font = pygame.font.Font(None, 32)
         text_surface = self.font.render(text, True, colours.BLACK)
