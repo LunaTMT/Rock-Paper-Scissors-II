@@ -26,10 +26,6 @@ class TextBox:
         self.input_active = False
 
 
-        self.id = TextBox.id
-       # print(self.id)
-        TextBox.id += 1
-
         self._set_rect()
 
     def center_box(self):
@@ -48,7 +44,7 @@ class TextBox:
         
         
 
-        text = f"Player {self.interface.current_player.id}"
+        text = f"Player {GameState.current_player.id}"
         font = pygame.font.Font(None, 32)
         text_surface = self.font.render(text, True, colours.BLACK)
         self.screen.blit(text_surface, (self.x + 15, self.y - font.size(text)[1]  ))
@@ -83,10 +79,12 @@ class TextBox:
                 self.user_input = self.user_input[:-1]
             
             elif event.key == K_RETURN:
-                self.interface.current_player.name = self.user_input
-                self.user_input = ""
+                GameState.current_player.name = self.user_input
                 self.interface.text_boxes.pop(0)
-                self.interface.get_next_player()
+                self.user_input = ""
+                
+                if all(player.name for player in self.interface.players):
+                    self.interface.play_game = True
                 
 
             else:

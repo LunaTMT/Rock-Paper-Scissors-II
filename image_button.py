@@ -1,4 +1,5 @@
 import pygame
+from gamestate import GameState
 
 class ImageButton():
 
@@ -19,7 +20,7 @@ class ImageButton():
         self.hover = False
 
         self._set_rect()
-        #interface.buttons.append(self)
+
         
 
     def draw(self):
@@ -31,14 +32,14 @@ class ImageButton():
 
     
     def handle_event(self, event):
-        print(self.hover)
         if event.type == pygame.MOUSEMOTION:
             self.hover = True if self.rect.collidepoint(event.pos) else False
         
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                self.interface.current_button = self.name_state
-                self.function() 
+                GameState.get_next_player()
+                self.function(self.name_state) 
+               
 
     def _set_rect(self):
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
