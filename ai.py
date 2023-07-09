@@ -1,4 +1,7 @@
-from .player import Player
+from player import Player
 
 class Ai(Player):
-    pass
+    
+    def __init__(self, interface) -> None:
+        super().__init__(interface)
+        self.name = "Computer"

@@ -12,14 +12,13 @@ class MenuButton(Button):
     def draw(self):
         if self.hover:
             self.rect_colour = colours.GOLD
-            self.text_colour = colours.BLACK
+            self.interface.text_colour = colours.BLACK
         
         else:
             #If the current button being drawn is not(!) the one being hovered over,
             # then its colours must match the background 
             if self.interface.screen_colour == colours.FIREBRICK:
                 self.rect_colour = colours.FIREBRICK_2 
-                self.interface.text_colour = colours.BLACK 
             else:
                 self.rect_colour = colours.DODGER_BLUE_2
                 self.interface.text_colour = colours.WHITE 

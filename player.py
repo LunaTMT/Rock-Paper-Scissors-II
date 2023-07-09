@@ -11,7 +11,7 @@ class Player:
 
         self.id = GameState.turn + 1
 
-        self.name = ""
+        self.name = False
         self.score = 0
         self.choice = 0
 
@@ -20,7 +20,9 @@ class Player:
 
 
     def __str__(self):
-        return f"Player {(self.id)} Name: {self.name}, Score: {self.score}"
+        return f"Player {(self.id)}: {self.name} \nScore: {self.score}"
+    
+
 
     def get_name(self):
         """

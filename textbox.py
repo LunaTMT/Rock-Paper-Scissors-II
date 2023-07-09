@@ -78,8 +78,7 @@ class TextBox:
             
 
         elif event.type == KEYDOWN:
-            print(event)
-            print(self.user_input)
+
             if event.key == K_BACKSPACE:
                 self.user_input = self.user_input[:-1]
             
@@ -91,7 +90,6 @@ class TextBox:
                 
 
             else:
-                print(1)
                 self.user_input += event.unicode
 
 
