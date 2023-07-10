@@ -19,11 +19,14 @@ class Player:
 
         self.id = GameState.turn + 1
 
-        self.name = None
+        self.name = ""
         self.score = 0
-        self.choice = None
+        self.choice = ""
 
         self.name_text_box = None
+
+        self.choice_x = 0
+        self.choice_y = 1
 
         GameState.turn += 1
 
@@ -35,14 +38,14 @@ class Player:
     def __repr__(self) -> str:
         return f"P{(self.id)}"
     
-    def get_choice_image(self):
+    def get_choice_obj(self):
         match self.choice:
             case "Rock":
-                return self.interface.rock_img
+                return self.interface.rock
             case "Paper":
-                return self.interface.paper_img
+                return self.interface.paper
             case "Scissors":
-                return self.interface.scissors_img
+                return self.interface.scissors
 
         
     def draw_info(self):
@@ -52,29 +55,25 @@ class Player:
 
     def draw_choice(self):
         if self.choice:
+
+        
             # Load the image
-            choice_img = self.get_choice_image()
-            img_width, img_height = choice_img.get_width(), choice_img.get_height()
+            choice = self.get_choice_obj()
+            
+            if self.name == "Computer" and self.id == 2:
+                self.screen.blit(choice.image, (self.interface.choice_img_center_x, self.interface.choice_img_center_y))
+            else:
+                choice.move_to_center()
+                self.screen.blit(choice.image, (choice.x, choice.y))
+
+
+            
             
 
-            # Set the rectangle dimensions
-            rect_width = 210
-            rect_height = 150
 
-            # Create a rectangle surface
 
-            rect_surface = pygame.Surface((rect_width, rect_height), pygame.SRCALPHA)
-            rect_surface.fill((255, 215, 0, 128))  # Fill with red color
 
-            # Calculate the position to center the image on the rectangle surface
-            image_x = (rect_width - img_width) // 2
-            image_y = (rect_height - img_height) // 2
+            
+            
 
-            # Blit the image onto the rectangle surface at the center position
-            rect_surface.blit(choice_img, (image_x, image_y))
-
-            # Blit the rectangle surface onto the screen at a specific position
-
-      
-
-            self.screen.blit(rect_surface, self.get_centered_coord(rect_width, rect_height, 0, 1))
+            

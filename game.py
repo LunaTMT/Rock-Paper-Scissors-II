@@ -44,42 +44,17 @@ class Game:
         self.players = []
         self.rectangles = [] 
         self.text_boxes = []
-        self.buttons = self.create_menu_buttons()
+        self.buttons = self.generate_menu_buttons()
 
-        
+        self.rules = {"Rock"    : "Scissors",            
+                "Paper"    : "Rock",           
+                "Scissors" : "Paper"}    
+
         self.timer = pygame.time.get_ticks()
         self.delay = 400
 
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("Rock Paper Scissors")
-
-
-
-    def initialise_images(self):
-        self.rock_img = pygame.image.load("assets/images/rock.png")
-        self.paper_img = pygame.image.load("assets/images/paper.png") 
-        self.scissors_img = pygame.image.load("assets/images/scissors.png")
-
-
-        self.rock_img = self.resize_image(self.rock_img, 0.3)
-        self.paper_img = self.resize_image(self.paper_img, 0.3)
-        self.scissors_img = self.resize_image(self.scissors_img, 0.3)
-
-        self.golden_rock_img = self.create_golden_image(self.rock_img)
-        self.golden_paper_img = self.create_golden_image(self.paper_img)
-        self.golden_scissors_img = self.create_golden_image(self.scissors_img)
-
-        self.RPS_images = [self.rock_img , self.paper_img, self.scissors_img]
-
-        #They are all the same size 
-        img_size = self.rock_img.get_rect()
-
-        self.choice_img_center_x = (self.screen_width - img_size.width) // 2
-        self.choice_img_center_y = (self.screen_height - img_size.height) // 2
-
-
-        self.current_image = 0
-
 
         
 
@@ -111,7 +86,7 @@ class Game:
 
 
         #Main menu title
-        self.draw_game_title()
+        self.draw_game_title( "Rock Paper Scissors", 1, 0.5)
         
     
         for button in self.buttons:
@@ -123,58 +98,31 @@ class Game:
 
         
         if self.play_game:
+
             for player in GameState.players:
                 player.draw_choice() 
                 
-            player = GameState.current_player #used to make following code clearer
-
-
-            player.draw_info()
+            current_player = GameState.current_player #used to make following code clearer
+            current_player.draw_info()
         
-        
-            if player.choice != None:
-                player.draw_choice()
+
+            if isinstance(current_player, Ai):
+                self.buttons = []
+
+                if not current_player.choice:
+                    current_player.get_choice()
+
+            else:
+                self.draw_choice_buttons()
+            
+
+            if all(player.choice for player in GameState.players):
+                self.check_winner()
                 
             else:
                 self._generate_flashing_choices(self.choice_img_center_x,  self.choice_img_center_y)
 
             
-
-            if isinstance(player, Ai):
-                #I dont know how to c
-                self.buttons = []
-            else:
-                rock = ImageButton(self, 
-                                   self.rock_img, 
-                                   self.golden_rock_img, 
-                                   self.choice_img_center_x * 0.5, 0, 
-                                   "Rock", 
-                                   GameState.set_current_choice)
-                
-                paper = ImageButton(self, 
-                                    self.paper_img, 
-                                    self.golden_paper_img, 
-                                    self.choice_img_center_x * 1, 0, 
-                                    "Paper", 
-                                    GameState.set_current_choice)
-                
-                scissors = ImageButton(self, 
-                                        self.scissors_img, 
-                                        self.golden_scissors_img, 
-                                        self.choice_img_center_x * 1.5, 0, 
-                                        "Scissors", 
-                                        GameState.set_current_choice)
-            
-                rock.place_at_bottom()
-                paper.place_at_bottom()
-                scissors.place_at_bottom()
-                
-                if len(self.buttons) < 3:
-                    self.buttons += [rock, paper, scissors]
-            
-
-            if player.choice:
-                pass
  
             
             
@@ -200,25 +148,52 @@ class Game:
         self.cleanup()
         
 
-    def get_players(self):
-        self.buttons = []
-        self.base_menu = False
-        
-        if self.current_button == "PVC":
-            GameState.players = [Player(self), Ai(self)]
-            GameState.current_player = GameState.players[0]
-            
-            name_input = TextBox(self, 0, 0, 400, 50)
-            name_input.center_box()
-            self.text_boxes.append(name_input)
+
+    def initialise_images(self):
+        self.rock_img = pygame.image.load("assets/images/rock.png")
+        self.paper_img = pygame.image.load("assets/images/paper.png") 
+        self.scissors_img = pygame.image.load("assets/images/scissors.png")
+
+
+        self.rock_img = self.resize_image(self.rock_img, 0.3)
+        self.paper_img = self.resize_image(self.paper_img, 0.3)
+        self.scissors_img = self.resize_image(self.scissors_img, 0.3)
+
+        self.golden_rock_img = self.create_golden_image(self.rock_img)
+        self.golden_paper_img = self.create_golden_image(self.paper_img)
+        self.golden_scissors_img = self.create_golden_image(self.scissors_img)
+
+        self.RPS_images = [self.rock_img , self.paper_img, self.scissors_img]
+
+        #They are all the same size 
+        img_size = self.rock_img.get_rect()
+
+        self.choice_img_center_x = (self.screen_width - img_size.width) // 2
+        self.choice_img_center_y = (self.screen_height - img_size.height) // 2
+
+
+        self.current_image = 0
+
             
     
-    def create_menu_buttons(self):
+    def generate_menu_buttons(self):
         PCP_button = MenuButton(self, 0, 0, 400, 50, "Player V.S. Computer", "PVC", self.get_players)
         PCP_button.center_button()
 
         return [PCP_button]
 
+    def _generate_flashing_choices(self, x , y):
+    
+        current_time = pygame.time.get_ticks()
+        elapsed_time = current_time - self.timer
+
+        # Check if it's time to switch the image
+        if elapsed_time >= self.delay:
+            self.current_image = (self.current_image + 1) % len(self.RPS_images)  # Increment the current image index
+            self.timer = pygame.time.get_ticks()  # Reset the timer
+
+        # Display the current image
+        self.screen.blit(self.RPS_images[self.current_image], (x, y))
 
     def _generate_screen_fire(self):
         particles = []
@@ -248,23 +223,7 @@ class Game:
             particle[0] = x
             particle[1] = y 
         
-    def _generate_flashing_choices(self, x , y):
-        
-        
 
-        current_time = pygame.time.get_ticks()
-        elapsed_time = current_time - self.timer
-
-        # Check if it's time to switch the image
-        if elapsed_time >= self.delay:
-            self.current_image = (self.current_image + 1) % len(self.RPS_images)  # Increment the current image index
-            self.timer = pygame.time.get_ticks()  # Reset the timer
-
-        # Display the current image
-        self.screen.blit(self.RPS_images[self.current_image], (x, y))
-
-
-  
 
     def resize_image(self, image, percentage):
         width, height = image.get_size()
@@ -293,17 +252,59 @@ class Game:
         pygame.draw.line(self.screen, colours.BLACK, (0, 170), (self.screen_width, 170), 5)
         pygame.draw.line(self.screen, colours.BLACK, (self.center_x, 170), (self.center_x, self.screen_height), 5)
 
-    def draw_game_title(self):
-        game_title = self.title_font.render('Rock Paper Scissors', True, self.text_colour)
+    def draw_game_title(self, title_text, x, y):
+        game_title = self.title_font.render(title_text, True, self.text_colour)
         width, height = self.get_title_size(game_title)
-        self.screen.blit(game_title, self.get_centered_coord(width, height, 1, 0.5))
+        self.screen.blit(game_title, self.get_centered_coord(width, height, x, y))
 
+       
+
+    def draw_choice_buttons(self):
+        self.rock = ImageButton(self, 
+                                   self.rock_img, 
+                                   self.golden_rock_img, 
+                                   self.choice_img_center_x * 0.5, 0, 
+                                   "Rock", 
+                                   GameState.set_current_choice)
+                
+        self.paper = ImageButton(self, 
+                            self.paper_img, 
+                            self.golden_paper_img, 
+                            self.choice_img_center_x * 1, 0, 
+                            "Paper", 
+                            GameState.set_current_choice)
+        
+        self.scissors = ImageButton(self, 
+                                self.scissors_img, 
+                                self.golden_scissors_img, 
+                                self.choice_img_center_x * 1.5, 0, 
+                                "Scissors", 
+                                GameState.set_current_choice)
+    
+        self.rock.place_at_bottom()
+        self.paper.place_at_bottom()
+        self.scissors.place_at_bottom()
+        
+        if len(self.buttons) < 3:
+            self.buttons += [self.rock, self.paper, self.scissors]
+
+
+
+    def get_players(self):
+        self.buttons = []
+        self.base_menu = False
+        
+        if self.current_button == "PVC":
+            GameState.players = [Player(self), Ai(self)]
+            GameState.current_player = GameState.players[0]
+            
+            name_input = TextBox(self, 0, 0, 400, 50)
+            name_input.center_box()
+            self.text_boxes.append(name_input)
 
     def get_title_size(self, title):
         title_size = title.get_rect()
         return  title_size.width, title_size.height
-
-    
 
     def get_centered_coord(self, width, height, x_tranpose=1, y_transpose=1 ):
         center_x = (self.screen_width - width) // 2
@@ -311,4 +312,20 @@ class Game:
         return center_x * x_tranpose, center_y * y_transpose
         
 
-                         
+
+
+    def check_winner(self):
+
+    
+        p1, p2 = GameState.players
+
+        if p1.choice == p2.choice:
+            self.draw_game_title("Draw", 1, 1.4)
+
+        elif self.rules[p1.choice] == p2.choice:
+            self.draw_game_title("Win", 1, 1.4)
+        else:
+            self.draw_game_title("You loose", 1, 1.4)
+
+  
+  

@@ -15,6 +15,9 @@ class ImageButton():
         self.width = image.get_width()
         self.height = image.get_height()
 
+        self.center_x, self.center_y = interface.get_centered_coord(self.width, self.height)
+
+
         self.name_state = name_state
         self.function = function 
         self.hover = False
@@ -47,3 +50,19 @@ class ImageButton():
         self.y = self.interface.screen_height - self.height - 30
         self._set_rect()
 
+
+    def move_to_center(self):
+            # Move the rectangle towards the center
+
+
+        while self.x != self.center_x:
+            if self.x < self.center_x:
+                self.x += 1
+            else:
+                self.x -= 1
+
+            self.draw()
+
+
+
+ 

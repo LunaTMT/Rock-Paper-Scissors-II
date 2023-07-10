@@ -9,3 +9,8 @@ class Ai(Player):
         self.id = 2  
         self.name = "Computer"
 
+        self.choice_x = 2
+        self.choice_y = 1
+
+    def get_choice(self):
+        self.choice = random.choice(('Rock', 'Paper', 'Scissors'))
