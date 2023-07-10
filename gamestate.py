@@ -20,9 +20,3 @@ class GameState:
         GameState.current_player.choice = choice
         GameState.get_next_player()
         
-        """#get ai player and set random choice of words
-        GameState.get_next_player()
-        GameState.current_player.choice = random.choice(('Rock', 'Paper', 'Scissors'))
-
-        #get next player, i.e. first player
-        GameState.get_next_player()"""
