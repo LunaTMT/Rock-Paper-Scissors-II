@@ -1,7 +1,10 @@
 import pygame
-from pygame.locals import *
-import assets.colours as colours
 import random
+import time
+
+from pygame.locals import *
+
+import assets.colours as colours
 from menu_button import MenuButton
 from image_button import ImageButton
 from button import Button
@@ -10,7 +13,7 @@ from gamestate import GameState
 from textbox import TextBox
 from ai import Ai
 from gamestate import GameState
-import time
+
 
 class Game:
     def __init__(self) -> None:
@@ -503,6 +506,8 @@ class Game:
         """
         if self.win_state == "Win":
             GameState.players[0].score += 1
-        else:
+        elif self.win_state == "You loose":
             GameState.players[1].score += 1
+        else:
+            pass
 

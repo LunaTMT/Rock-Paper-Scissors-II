@@ -52,7 +52,7 @@ class ImageButton():
 
 
     def move_to_center(self):
-            # Move the rectangle towards the center
+       #Move the rectangle towards the center
 
 
         while self.x != self.center_x:

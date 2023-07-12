@@ -1,6 +1,7 @@
 import assets.colours as colours
 import random
 
+"""This class keeps track of the state of the game"""
 class GameState:
 
     turn = 0
@@ -10,13 +11,19 @@ class GameState:
 
     @staticmethod
     def get_next_player():
+        """
+        This function increments the current turn and then changes the current player based upon the turn
+        Takes advantage of the parity of numbers and the continual switching between 0 and 1 for %2
+        """
         GameState.turn += 1
         GameState.current_player = GameState.players[GameState.turn % 2]
 
          
     @staticmethod
     def set_current_choice(choice):
-        #first player set name
+        """
+        This function simple sets the choice of the current player 
+        """
         GameState.current_player.choice = choice
         GameState.get_next_player()
         
