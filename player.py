@@ -53,6 +53,9 @@ class Player:
         width, height = self.get_title_size(player_info)
         self.screen.blit(player_info,  self.get_centered_coord(width, height,  1, 0.3))
 
+    
+
+
     def draw_choice(self):
         if self.choice:
 
