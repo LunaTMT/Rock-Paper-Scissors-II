@@ -32,11 +32,11 @@ class Player:
 
 
     def __str__(self):
-        return f"Player {(self.id)}: {self.name}                    Score: {self.score}                     Choice: {self.choice}"
+        return f"Player {(self.id)}: {self.name} Score: {self.score} Choice: {self.choice}"
     
         
     def __repr__(self) -> str:
-        return f"P{(self.id)}"
+        return f"Player {(self.id)}: {self.name} Score: {self.score} Choice: {self.choice}"
     
     def get_choice_obj(self):
         match self.choice:
