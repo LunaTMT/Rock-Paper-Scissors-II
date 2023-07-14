@@ -1,8 +1,8 @@
----
-description: This project is a very basic Rock, Paper, Scissors game created with Pygame
----
-
 # Rock Paper Scissors
+
+## Description
+
+This project is a very basic Rock, Paper, Scissors game created with Pygame
 
 ## How to run
 
