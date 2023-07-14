@@ -62,9 +62,19 @@ https://github.com/LunaTMT/Rock\_Paper\_Scissors\_GUI/assets/44672093/c4ceb953-2
 
 I really wanted to implement networking and sockets into this project but I felt a little too overwhelmed when I began to delve into it, such that I felt it to be wiser to postpone this feature for a later date or another project. The sole focus became gaining more familiarity with pygame and OOP.
 
-&#x20;If I were to implement this feature I would make a very very basic game without all the fancy animations to make it look nice and most likely without OO to begin with.  I was hoping to implement another menu option, such as, _Player V.S. Player_ where one user could choose to be the server and the other player, the client, could join.
+&#x20;If I were to implement this feature I would make an overly basic game without all the fancy animations to make it look nice and most likely without OO to begin with.&#x20;
+
+I was hoping to implement another menu option, such as, _Player V.S. Player_ where one user could choose to be the server and the other player, the client, could join.
 
 ### Limitations
 
 * The game is limited to playing strictly against a bot and not another person.
-* Once the game window is close all score and player data is lost
+* Once the game window is closed and the program exited, all score and player data is lost
+
+### Takeaways
+
+From this project I've finally come to understand state transitions more and how they relate to finite-state machines and the main game-loop.
+
+There is a lot of work to be done to create more robust and resilient objects, especially for the player class, but all the buttons created were well encapsulated and all inherit from a well defined consise parent class. The latter classes could quite easily be transfered to another project.
+
+#### **Written - 14/07/2023**
