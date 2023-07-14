@@ -5,9 +5,8 @@ import time
 from pygame.locals import *
 
 import assets.colours as colours
-from menu_button import MenuButton
-from image_button import ImageButton
-from button import Button
+from buttons.menu_button import MenuButton
+from buttons.image_button import ImageButton
 from player import Player
 from gamestate import GameState
 from textbox import TextBox
@@ -26,9 +25,7 @@ class Game:
         self.play_game = False
         self.show_countdown = False
         self.show_winner = False
-        self.score_update = False
-        self.generate_scoreboard = False
-        self.show_scoreboard = False
+
 
     def on_init(self) -> None:
         pygame.init()
@@ -37,8 +34,7 @@ class Game:
         self.initialise_images()
     
         self.title_font = pygame.font.Font("assets/fonts/title.ttf", 65)
-        self.sub_heading_font = pygame.font.Font(None, 32)
-        self.countdown_font = pygame.font.Font(None, 100)
+        self.countdown_font = pygame.font.Font(None, 60)
         self.scoreboard_font = pygame.font.Font("assets/fonts/scoreboard.ttf", 50)
         self.text_colour = colours.WHITE
         
@@ -61,7 +57,11 @@ class Game:
 
         self.rules = {  "Rock"    : "Scissors",            
                         "Paper"    : "Rock",           
-                        "Scissors" : "Paper"}    
+                        "Scissors" : "Paper"}
+        
+        self.countdown = {3: "Rock",
+                          2: "Paper",
+                          1: "Scissors"}
 
         self.clock = pygame.time.Clock()
         self.timer = pygame.time.get_ticks()
@@ -102,17 +102,18 @@ class Game:
         for textbox in self.text_boxes:
             textbox.draw()
 
-        #So long has the players have been set we always(!) want to draw their choices
-        if self.players_set:
+
+        #So long has the players have been set such that they have been instantiated and have a name, we will draw their choice and score
+        if self.players_set and all(player.name for player in GameState.players):
             for player in GameState.players:
+                player.draw_score()
                 player.draw_choice()
                 
                  
-
-
         #When the game itself actually begins
         if self.play_game:
-            
+           
+
             #Until both players made a choice we want to keep displaying the flash to feign the opponent making a decision
             if not all(player.choice for player in GameState.players):
                 self.generate_flashing_choices()
@@ -120,42 +121,36 @@ class Game:
             
             #used to make following code clearer
             current_player = GameState.current_player 
-        
+
             #Until it is the Ai's turn 
-            if isinstance(current_player, Ai) and not current_player.choice:
+            if isinstance(current_player, Ai) and current_player.choice == "":
                 current_player.get_choice()
                 GameState.get_next_player()
                 
                 self.buttons = [] 
                 self.play_game = False
-                
-                self.show_countdown = True  #State transition
+                self.show_countdown = True  #State transition"""
+
                 #The start time is used between state transition 
                 #for there to be a delay of 3 seconds before the next state
                 self.start_time = time.time() 
-            
-            else:
-                #The player can choose one of the buttons
-                self.draw_choice_buttons()
-            
-        #The following is self-explanatory and does not need explanation
 
+            else:
+                if len(self.buttons) < 3:
+                    self.generate_choice_buttons()
+            
+
+        #The following is self-explanatory and does not need explanation
         if self.show_countdown:
             self.generate_flashing_choices()
+            self.generate_flashing_choices(transpose_y = 205)
             self.draw_countdown()
-        
+
         if self.show_winner:
             self.get_win_state()
             self.draw_title(self.title_font, self.win_state, 1, 1.4)
-        
-        if self.score_update:
-            self.update_score()
-
-        if self.generate_scoreboard:
-            self.generate_scoreboard_surface()
-
-        if self.show_scoreboard:
-            self.draw_scoreboard()
+           
+            
 
 
 
@@ -186,6 +181,12 @@ class Game:
         Here we initialise all the Rock Paper Scissor images to be used. 
         The golden images are created from the imported ones which are to be used when the button is hovered over.
         """
+
+        # I am aware that the rock image is slightly smaller and is a little bit distracting with flashing between all other options
+        # if the rock is changed with the new_rock of a different scaled size, the program just breaks upon choice selection for some reason
+        # unfortunately, I could not figure out why this was the case
+        #self.rock_img = pygame.image.load("assets/images/newly_scaled_rock.png")
+
         self.rock_img = pygame.image.load("assets/images/rock.png")
         self.paper_img = pygame.image.load("assets/images/paper.png") 
         self.scissors_img = pygame.image.load("assets/images/scissors.png")
@@ -211,6 +212,7 @@ class Game:
         self.current_image = 0
 
     def resize_image(self, image, percentage) -> pygame.surface:
+        """Resizes a given image"""
         width, height = image.get_size()
         return pygame.transform.scale(image, (width * percentage, height * percentage))
     
@@ -236,67 +238,40 @@ class Game:
     
 
 
-    def generate_scoreboard_surface(self) -> None:
+    def generate_choice_buttons(self) -> None:
         """
-        This function generate a pygame surface with the scoreboard blitted onto it
+        Creates three instances of an image button class and moves them to the bottom.
+        
         """
-
-        p1 =  GameState.players[0]
-        p2 =  GameState.players[1]
-        #Scoreboard data
-        scoreboard = [
-            ["Name", "Score",  "Choice"],
-            [ p1.name, str(p1.score), p1.choice],
-            [ p2.name, str(p2.score), p2.choice]]
+          
+        self.rock = ImageButton(self, 
+                                self.rock_img, 
+                                self.golden_rock_img, 
+                                self.choice_img_center_x * 0.5, 0, 
+                                "Rock", 
+                                GameState.set_current_choice)
+                
         
-        # Calculate the number of rows and columns
-        rows = len(scoreboard)
-        columns = len(scoreboard[0])
-
-        # Calculate the cell width and height based on the screen size and desired table size
-        table_width = self.screen_width // 1.5
-        table_height =  self.screen_height // 2.5
-        cell_width = table_width // columns
-        cell_height = table_height // rows
-
-        # Create a surface for the table
-        self.scoreboard_surface = pygame.Surface((table_width, table_height))
-        self.scoreboard_surface.fill(colours.FIREBRICK_2)
-
-        # Blit the centered text in each cell
-        for row in range(rows):
-            for col in range(columns):
-
-                # Calculate the position of the cell
-                cell_x = col * cell_width
-                cell_y = row * cell_height
-
-                # Create a text surface
-                text = scoreboard[row][col]
-                text_surface = self.scoreboard_font.render(text, True, colours.BLACK)
-
-                # Calculate the position to center the text in the cell
-                text_x = cell_x + (cell_width - text_surface.get_width()) // 2
-                text_y = cell_y + (cell_height - text_surface.get_height()) // 2
-
-                # Blit the text surface onto the table surface
-                self.scoreboard_surface.blit(text_surface, (text_x, text_y))
-
-                # Draw vertical lines
-                pygame.draw.line(self.scoreboard_surface, colours.BLACK, (cell_x, 0), (cell_x, table_height), 1)
-            # Draw horizontal lines
-            pygame.draw.line(self.scoreboard_surface, colours.BLACK, (0, cell_y), (table_width, cell_y), 1)
+        self.paper = ImageButton(self, 
+                            self.paper_img, 
+                            self.golden_paper_img, 
+                            self.choice_img_center_x * 1, 0, 
+                            "Paper", 
+                            GameState.set_current_choice)
         
-        # Calculate the position to center the table on the screen
-        self.table_x = (self.screen_width - table_width) // 2
-        self.table_y = (self.screen_height - table_height) // 2
+        self.scissors = ImageButton(self, 
+                                self.scissors_img, 
+                                self.golden_scissors_img, 
+                                self.choice_img_center_x * 1.5, 0, 
+                                "Scissors", 
+                                GameState.set_current_choice)
+    
+        self.rock.place_at_bottom()
+        self.paper.place_at_bottom()
+        self.scissors.place_at_bottom()
         
-        #Update states
-        self.players_set = False #we no longer want to display the player choices
-        self.score_update = False #previous state changed
-        self.generate_scoreboard = False #current state 
-        self.show_scoreboard = True #new state activate
-        self.start_time = time.time() #Timers used through for correct delay
+    
+        self.buttons += [self.rock, self.paper, self.scissors]
  
     def generate_menu_buttons(self) -> MenuButton:
         """
@@ -307,7 +282,7 @@ class Game:
 
         return [PCP_button]
 
-    def generate_flashing_choices(self) -> None:
+    def generate_flashing_choices(self, transpose_x=0, transpose_y=0) -> None:
         """
         This function blits onto the screen all choices in order such that it 
         appears the opponent is making up their mind what to choice
@@ -321,7 +296,7 @@ class Game:
             self.timer = pygame.time.get_ticks()  # Reset the timer
 
         # Display the current image
-        self.screen.blit(self.RPS_images[self.current_image], (self.choice_img_center_x,  self.choice_img_center_y))
+        self.screen.blit(self.RPS_images[self.current_image], (self.choice_img_center_x + transpose_x,  self.choice_img_center_y + transpose_y))
 
     def generate_screen_particles(self) -> list[int]:
         """
@@ -341,54 +316,22 @@ class Game:
         """
         draws a countdown in the center of the screen from 3
         """
+        
         elapsed_time = time.time() - self.start_time
         remaining_time = 3 - elapsed_time
+
         
         if remaining_time > 0:
-            self.draw_title(self.countdown_font, str(int(remaining_time) + 1), 1, 1.43 )
+            self.draw_title(self.countdown_font, self.countdown[int(remaining_time) + 1], 1, 1.38 )
         else:
             self.show_countdown = False
             self.show_winner = True
             self.start_time = time.time()
-  
-    def draw_choice_buttons(self) -> None:
-        """
-        Creates three instances of an image button class and moves them to the bottom.
-        
-        """
-        
-        if len(self.buttons) < 3:
-            self.rock = ImageButton(self, 
-                                    self.rock_img, 
-                                    self.golden_rock_img, 
-                                    self.choice_img_center_x * 0.5, 0, 
-                                    "Rock", 
-                                    GameState.set_current_choice)
-                    
-            self.paper = ImageButton(self, 
-                                self.paper_img, 
-                                self.golden_paper_img, 
-                                self.choice_img_center_x * 1, 0, 
-                                "Paper", 
-                                GameState.set_current_choice)
-            
-            self.scissors = ImageButton(self, 
-                                    self.scissors_img, 
-                                    self.golden_scissors_img, 
-                                    self.choice_img_center_x * 1.5, 0, 
-                                    "Scissors", 
-                                    GameState.set_current_choice)
-        
-            self.rock.place_at_bottom()
-            self.paper.place_at_bottom()
-            self.scissors.place_at_bottom()
-            
-       
-            self.buttons += [self.rock, self.paper, self.scissors]
 
     def draw_screen_particle(self) -> None:
         """
-        This function draws the screen particles onto the screen"""
+        This function draws the screen particles onto the screen
+        """
         for particle in self.screen_particles:
             x, y, size = particle
 
@@ -406,28 +349,6 @@ class Game:
 
             particle[0] = x
             particle[1] = y 
-        
-    def draw_scoreboard(self) -> None:
-        """
-        Draws the screenboard surface onto the screen.
-        When 3 seconds have elapsed the players choices are reset and the gamestates are set to default 
-        (Except the base menu for we already initialised the players)
-        """
-        self.screen.blit(self.scoreboard_surface, (self.table_x, self.table_y + 100))
-
-        elapsed_time = time.time() - self.start_time
-        remaining_time = 3 - elapsed_time
-        
-        if remaining_time > 0:
-            pass
-        else:
-            self.players_set = True
-            self.play_game = True
-            self.score_update = False
-            self.show_scoreboard = False
-
-            for player in GameState.players:
-                player.choice = ""
 
     def draw_title(self, font,  text, x, y) -> None:
         """
@@ -495,8 +416,13 @@ class Game:
             pass
         else:
             self.show_winner = False
-            self.score_update = True
-            self.generate_scoreboard = True
+            self.players_set = True
+            self.play_game = True
+
+            self.update_score()
+
+            for player in GameState.players:
+                player.choice = ""
 
 
 
@@ -510,4 +436,3 @@ class Game:
             GameState.players[1].score += 1
         else:
             pass
-

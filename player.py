@@ -8,14 +8,15 @@ class Player:
 
 
     def __init__(self, interface) -> None:
+        #interface attributes
         self.interface              = interface
         self.screen                 = interface.screen
-
-        self.sub_heading_font       = interface.sub_heading_font
+        self.scoreboard_font        = interface.scoreboard_font
         self.text_colour            = interface.text_colour
         
+        #interface funcitons
         self.get_centered_coord     = interface.get_centered_coord
-        self.get_title_size         = interface.get_title_size
+        self.draw_title             = interface.draw_title
 
         self.id = GameState.turn + 1
 
@@ -28,17 +29,21 @@ class Player:
         self.choice_x = 0
         self.choice_y = 1
 
+        self.score_x = 0.5
+        self.score_y = 1
+
         GameState.turn += 1
 
 
     def __str__(self):
-        return f"Player {(self.id)}: {self.name} Score: {self.score} Choice: {self.choice}"
+        return f" {(self.id)}: {self.name} Score: {self.score} Choice: {self.choice}"
     
         
     def __repr__(self) -> str:
         return f"Player {(self.id)}: {self.name} Score: {self.score} Choice: {self.choice}"
     
     def get_choice_obj(self):
+        """This function return the pygame.image instance stored in the interface"""
         match self.choice:
             case "Rock":
                 return self.interface.rock
@@ -48,17 +53,17 @@ class Player:
                 return self.interface.scissors
 
         
-    def draw_info(self):
-        player_info = self.sub_heading_font.render(self.__str__(), True, self.text_colour)
-        width, height = self.get_title_size(player_info)
-        self.screen.blit(player_info,  self.get_centered_coord(width, height,  1, 0.3))
-
-    
-
+    def draw_score(self):
+        """
+        Simply draws the players name and their score"""
+        self.draw_title(self.scoreboard_font, self.name, self.score_x, self.score_y)
+        self.draw_title(self.scoreboard_font, str(self.score), self.score_x, self.score_y + 0.2 )
 
     def draw_choice(self):
+        """
+        Simply draws the player's coice based upon their name
+        """
         if self.choice:
-
         
             # Load the image
             choice = self.get_choice_obj()

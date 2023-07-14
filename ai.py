@@ -12,5 +12,8 @@ class Ai(Player):
         self.choice_x = 2
         self.choice_y = 1
 
-    def get_choice(self):
+        self.score_x = 1.5
+
+    def get_choice(self) -> None:
+        """Gets a random choice from rock paper scissors and sets the player's choice to it"""
         self.choice = random.choice(('Rock', 'Paper', 'Scissors'))

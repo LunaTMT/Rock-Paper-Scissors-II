@@ -37,14 +37,18 @@ class TextBox:
         self.x = center_x
         self.y = center_y 
         self._set_rect()
-        
-        
-    def _set_rect(self):
+            
+    def _set_rect(self) -> None:
+        """
+        This function simple creates a new instance of the textbox rectangle with the current obj attributes
+        """
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
-    
     def draw(self) -> None:
-        
+        """
+        Draws the object onto the screen
+        """
+
         """Blits the players name above textbox"""
         text = f"Player {GameState.current_player.id}"
         font = pygame.font.Font(None, 32)
@@ -65,24 +69,25 @@ class TextBox:
             self.user_input = "" 
             text = self.font.render(self.default_text, True, self.text_colour)
             
-
+        #Blit textbox 
         pygame.draw.rect(self.screen, self.rect_colour, self.rect, border_radius = 20)
         text_rect = text.get_rect(center=self.rect.center)
         self.screen.blit(text, text_rect)
     
-
     def handle_event(self, event) -> None:
+        """
+        Event handler
+        """
 
         if event.type == pygame.MOUSEMOTION: #update collide state
             self.hover = True if self.rect.collidepoint(event.pos) else False
             
-
         elif event.type == KEYDOWN:
 
             if event.key == K_BACKSPACE: #remove text upon backspace being pressed
                 self.user_input = self.user_input[:-1]
             
-            elif event.key == K_RETURN: #Upon return set the players name and remove it from the interface list so it wont draw
+            elif event.key == K_RETURN and self.user_input != "": #Upon return set the players name and remove it from the interface list so it wont draw
                 GameState.current_player.name = self.user_input
                 self.interface.text_boxes.pop(0)
                 self.user_input = ""
