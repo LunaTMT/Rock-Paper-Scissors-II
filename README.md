@@ -44,6 +44,16 @@ This project is a very basic Rock, Paper, Scissors game created with Pygame
 
 </div>
 
+## Demonstration
+
+### Menu
+
+{% file src=".gitbook/assets/User_input.mp4" %}
+
+{% file src=".gitbook/assets/Menu.mp4" %}
+
+### User input
+
 
 
 * What the project does
