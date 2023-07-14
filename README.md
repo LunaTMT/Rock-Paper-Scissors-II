@@ -75,6 +75,6 @@ I was hoping to implement another menu option, such as, _Player V.S. Player_ whe
 
 From this project I've finally come to understand state transitions more and how they relate to finite-state machines and the main game-loop.
 
-There is a lot of work to be done to create more robust and resilient objects, especially for the player class, but all the buttons created were well encapsulated and all inherit from a well defined consise parent class. The latter classes could quite easily be transfered to another project.
+There is a lot of work to be done to create more robust, resilient and scalable objects, especially for the player class, but all the buttons created were well encapsulated and all inherit from a well defined consise parent class. The latter classes could quite easily be transfered to another project.
 
 #### **Written - 14/07/2023**
