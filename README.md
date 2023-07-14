@@ -6,7 +6,7 @@ description: This project is a very basic Rock, Paper, Scissors game created wit
 
 ## How to run
 
-* Download the files from the GitHub directory
+* Download the files from the GitHub repository
 
 <figure><img src=".gitbook/assets/rock_paper_scissors.png" alt=""><figcaption><p>Downloading</p></figcaption></figure>
 
