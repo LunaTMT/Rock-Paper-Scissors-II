@@ -54,7 +54,9 @@ https://github.com/LunaTMT/Rock_Paper_Scissors_GUI/assets/44672093/6bfff62d-db62
 
 ### User input
 
-https://github.com/LunaTMT/Rock_Paper_Scissors_GUI/assets/44672093/e2633e12-36fd-4a2d-8e8d-25f0b9e1ced7
+https://github.com/LunaTMT/Rock_Paper_Scissors_GUI/assets/44672093/9d1c546e-8c44-4753-a3a6-db1879ebd6c9
+
+### Game
 
 
 
