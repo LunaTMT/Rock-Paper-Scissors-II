@@ -50,13 +50,15 @@ This project is a very basic Rock, Paper, Scissors game created with Pygame
 
 https://github.com/LunaTMT/Rock_Paper_Scissors_GUI/assets/44672093/6bfff62d-db62-4b5c-93a8-2ddab7cc3333
 
-
-
 ### User input
 
 https://github.com/LunaTMT/Rock_Paper_Scissors_GUI/assets/44672093/9d1c546e-8c44-4753-a3a6-db1879ebd6c9
 
 ### Game
+
+https://github.com/LunaTMT/Rock_Paper_Scissors_GUI/assets/44672093/c4ceb953-2c3f-4e1c-b1f0-5a5d459fd8c5
+
+
 
 
 
