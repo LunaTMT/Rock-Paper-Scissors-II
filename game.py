@@ -7,10 +7,10 @@ from pygame.locals import *
 import assets.colours as colours
 from buttons.menu_button import MenuButton
 from buttons.image_button import ImageButton
-from player import Player
+from players.player import Player
 from gamestate import GameState
 from textbox import TextBox
-from ai import Ai
+from players.ai import Ai
 from gamestate import GameState
 
 
@@ -322,7 +322,7 @@ class Game:
 
         
         if remaining_time > 0:
-            self.draw_title(self.countdown_font, self.countdown[int(remaining_time) + 1], 1, 1.38 )
+            self.draw_title(self.scoreboard_font, self.countdown[int(remaining_time) + 1], 1, 1.38 )
         else:
             self.show_countdown = False
             self.show_winner = True
