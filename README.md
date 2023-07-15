@@ -71,6 +71,9 @@ I was hoping to implement another menu option, such as, _Player V.S. Player_ whe
 * The game is limited to playing strictly against a bot and not another person.
 * Once the game window is closed and the program exited, all score and player data is lost
 
+### Bugs
+There is also a really strange bug I was unable to resolve when changing the _'rock.png'_ image to the _'newly_scaled_rock.png'_. The program just crashes on choice selection, i.e. when the user clicks on a button. If you pay attention to the game.mp4, the rock image is slightly smaller than the rest and is a little annoying when blitting between the other images as it distorts the visual impression of the other statically fixed cricles.
+
 ### Takeaways
 
 From this project I've finally come to understand state transitions more and how they relate to finite-state machines and the main game-loop.
